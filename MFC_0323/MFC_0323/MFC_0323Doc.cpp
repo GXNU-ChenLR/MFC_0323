@@ -30,7 +30,11 @@ END_MESSAGE_MAP()
 CMFC_0323Doc::CMFC_0323Doc()
 {
 	// TODO: 在此添加一次性构造代码
-
+	radius = 0;
+	r = 0;
+	g = 0;
+	b = 0;
+	flag = FALSE;
 }
 
 CMFC_0323Doc::~CMFC_0323Doc()

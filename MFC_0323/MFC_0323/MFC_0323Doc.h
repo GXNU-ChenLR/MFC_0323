@@ -14,7 +14,9 @@ protected: // 仅从序列化创建
 
 // 特性
 public:
-
+	int x, y,radius;
+	int r, g, b;
+	bool flag;
 // 操作
 public:
 

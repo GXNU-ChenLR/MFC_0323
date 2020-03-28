@@ -39,6 +39,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnShow();
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
 };
 
 #ifndef _DEBUG  // MFC_0323View.cpp 中的调试版本

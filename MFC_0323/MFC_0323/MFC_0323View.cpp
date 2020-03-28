@@ -23,6 +23,7 @@ IMPLEMENT_DYNCREATE(CMFC_0323View, CView)
 
 BEGIN_MESSAGE_MAP(CMFC_0323View, CView)
 	ON_COMMAND(ID_SHOW, &CMFC_0323View::OnShow)
+	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 // CMFC_0323View 构造/析构
@@ -53,7 +54,26 @@ void CMFC_0323View::OnDraw(CDC* /*pDC*/)
 	ASSERT_VALID(pDoc);
 	if (!pDoc)
 		return;
+	SetTimer(pDoc->radius, 1000, NULL);
+	int t;
+	CRect cr;
+	this->GetClientRect(&cr);
+	pDoc->x = cr.Width() / 2;
+	pDoc->y = cr.Height() / 2;
+	if (pDoc->x < pDoc->y)t = pDoc->x;
+	else t = pDoc->y;
 
+	if (pDoc->flag && pDoc->radius <= t)
+	{
+		CClientDC dc(this);
+		CBrush cbrush;
+		int color;
+		color = RGB(pDoc->r, pDoc->g, pDoc->b);
+		cbrush.CreateSolidBrush(color);
+		dc.SelectObject(&cbrush);
+		dc.Ellipse(pDoc->x - pDoc->radius, pDoc->y - pDoc->radius, pDoc->x + pDoc->radius, pDoc->y + pDoc->radius);
+		//pDoc->flag = false;
+	}
 	// TODO: 在此处为本机数据添加绘制代码
 }
 
@@ -85,23 +105,31 @@ CMFC_0323Doc* CMFC_0323View::GetDocument() const // 非调试版本是内联的
 void CMFC_0323View::OnShow()
 {
 	// TODO: 在此添加命令处理程序代码
-	/*CString s = _T("123");
-	CClientDC dc(this);
-	dc.TextOutW(200, 300, s);*/
-	int r,t;
-	CRect cr;
-	this->GetClientRect(&cr);
-	int x = cr.Width() / 2;
-	int y = cr.Height() / 2;
-	if (x < y)t = x;
-	else t = y;
-	
-	//CPen newPen(PS_SOLID, 1, color);
-	//CPen*oldPen = pDC->SelectObject(&newPen);
-	CClientDC dc(this);
-	for (r = 1; r <= t; r++)
+	CMFC_0323Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+	pDoc->flag = true;
+}
+
+
+void CMFC_0323View::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	CMFC_0323Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	if (!pDoc)
+		return;
+	pDoc->radius += 1;
+	pDoc->r += 1;
+	pDoc->g += 2;
+	pDoc->b += 3;
+	if(pDoc->r >= 255|| pDoc->g >= 255|| pDoc->b >= 255)
 	{
-		dc.Ellipse(x - r, y - r, x + r, y + r);
-		//Invalidate();
+		pDoc->r = 0;
+		pDoc->g = 0;
+		pDoc->b = 0;
 	}
+	Invalidate();
+	CView::OnTimer(nIDEvent);
 }
